@@ -1,6 +1,7 @@
 using CargoConsolidator;
 using CargoConsolidatorTests.DataModel;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 using System.Linq;
 
 namespace CargoConsolidatorTests
@@ -31,22 +32,67 @@ namespace CargoConsolidatorTests
         [Test]
         public void T1_AddReports()
         {
-            //TODO Добавить xml репорт
-            //TODO Добавить json репорт
-            //TODO Проверить количество
-            Assert.Pass();
+            consolidator.AddReport(@"..\..\..\TestData\init1.zip");
+            consolidator.AddReport(@"..\..\..\TestData\init2.zip");
+
+            consolidator.AddReport(@"..\..\..\TestData\work1.zip");
+
+            using var context = new TestDbContext(options);
+
+            var item1 = context.Items.FirstOrDefault<Item>(x => x.Id == 1);
+            
+            Assert.That(item1, Is.Not.Null);
+            Assert.That(item1.Value, Is.EqualTo(33));
+
+            var item2 = context.Items.FirstOrDefault<Item>(x => x.Id == 2);
+
+            Assert.That(item2, Is.Not.Null);
+            Assert.That(item2.Value, Is.EqualTo(5));
+
+            var item3 = context.Items.FirstOrDefault<Item>(x => x.Id == 3);
+
+            Assert.That(item3, Is.Not.Null);
+            Assert.That(item3.Value, Is.EqualTo(5));
         }
 
-        [Test]
-        public void T2_SentBetweenKnownStorages()
+        [TestCase(@"..\..\..\TestData\transfer.zip", Description = "Тест трансфера между известныи складами")]
+        [TestCase(@"..\..\..\TestData\carcoIdDuplicate.zip", Description = "Попытка добавить существующий груз")]
+        public void T2_AddTransferAndWring(string path)
         {
-            Assert.Pass();
+            int oldValue = 0;
+
+            using (var context = new TestDbContext(options))
+            {
+                var item = context.Items.FirstOrDefault<Item>(x => x.Id == 1);
+
+                oldValue = item.Value;
+            }
+
+            consolidator.AddReport(@"..\..\..\TestData\transfer.zip");
+
+            using (var context = new TestDbContext(options))
+            {
+                var item = context.Items.FirstOrDefault<Item>(x => x.Id == 1);
+
+                Assert.That(item.Value, Is.EqualTo(oldValue));
+            }
         }
 
-        [Test]
-        public void T3_TryAddKnownCargo()
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        [TestCase(5)]
+        public void T4_GetItemAmount(int itemId)
         {
-            Assert.Pass();
+            consolidator.AddReport(@"..\..\..\TestData\work1.zip");
+
+            using var context = new TestDbContext(options);
+
+            var item = context.Items.FirstOrDefault<Item>(x => x.Id == itemId);
+            var amount = consolidator.GetAmount(itemId);
+
+            Assert.That(item.Value, Is.EqualTo(amount));
         }
     }
 }
