@@ -31,9 +31,9 @@ namespace CargoConsolidatorTests
         [Test]
         public void T1_AddReports()
         {
-            //TODO Добавить xml репорт
-            //TODO Добавить json репорт
-            //TODO Проверить количество
+            //TODO Р”РѕР±Р°РІРёС‚СЊ xml СЂРµРїРѕСЂС‚
+            //TODO Р”РѕР±Р°РІРёС‚СЊ json СЂРµРїРѕСЂС‚
+            //TODO РџСЂРѕРІРµСЂРёС‚СЊ РєРѕР»РёС‡РµСЃС‚РІРѕ
             Assert.Pass();
         }
 
