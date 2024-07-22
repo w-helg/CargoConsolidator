@@ -8,6 +8,7 @@ namespace CargoConsolidator
 {
     public interface ICargoConsolidator
     {
-
+        public void AddReport(string path);
+        public int GetAmount(int itemId);
     }
 }
