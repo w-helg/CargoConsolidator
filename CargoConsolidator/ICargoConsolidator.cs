@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +8,7 @@ namespace CargoConsolidator
 {
     public interface ICargoConsolidator
     {
-
+        public void AddReport(string path);
+        public int GetAmount(int itemId);
     }
 }
